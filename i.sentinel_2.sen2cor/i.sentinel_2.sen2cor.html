@@ -1,0 +1,42 @@
+<h2>DESCRIPTION</h2>
+
+<em>i.sentinel_2.sen2cor</em> runs atmospherical correction on a single Sentinel-2 Level-1C scene
+using <a href="http://step.esa.int/main/snap-supported-plugins/sen2cor/">Sen2Cor</a>. Therefore,
+Sen2Cor needs to be installed and configured to use from the command line (it is recommended
+to use the standalone command line tool).
+<p>
+The entire processing takes place outside of GRASS GIS. This addon is helpful when used as
+an intermediate step between downloading (<a href="i.sentinel.download.html">i.sentinel.download</a>)
+and importing (<a href="i.sentinel.import.html">i.sentinel.import</a>) of L1C (then L2A) data.
+<p>
+Most of the Sen2Cor parameters are not changed by this addon in order to make the
+results consistent with ESA's L2A standard products. Options from the configurable
+Sen2Cor parameters supported by this addon can be adapted by the user according to
+ <a href="http://step.esa.int/thirdparties/sen2cor/2.8.0/docs/S2-PDGS-MPC-L2A-IODD-V2.8.pdf">Level 2A Input Output Data Definition</a>.
+
+<h2>EXAMPLE</h2>
+
+<div class="code"><pre>
+i.sentinel_2.sen2cor input_file=S2A_MSIL1C_20190606T102031_N0207_R065_T33UUA_20190606T123501.SAFE output_dir=tmp/sen2cor_output sen2cor_path=/home/user/sen2cor
+</pre></div>
+
+<h2>SEE ALSO</h2>
+
+<em>
+<a href="i.sentinel.download.html">i.sentinel.download</a>,
+<a href="i.sentinel.import.html">i.sentinel.import</a>
+</em>
+
+<h2>REQUIREMENTS</h2>
+<a href="http://step.esa.int/main/snap-supported-plugins/sen2cor/">Sen2Cor</a>
+needs to be installed and configured for use from the command line. For
+additional information, see:
+<ul>
+  <li><a href="https://step.esa.int/thirdparties/sen2cor/2.11.0/docs/OMPC.TPZG.SRN.003%20-%20i1r0%20-%20Sen2Cor%202.11.00%20Software%20Release%20Note.pdf">Sen2Cor Release Note</a></li>
+  <li><a href="https://step.esa.int/thirdparties/sen2cor/2.11.0/docs/OMPC.TPZG.SUM.001%20-%20i1r0%20-%20Sen2Cor%202.11.00%20Configuration%20and%20User%20Manual.pdf">Sen2Cor Configuration and User Manual</a></li>
+  <li><a href="https://step.esa.int/thirdparties/sen2cor/2.11.0/docs/OMPC.TPZG.IOD.001%20-%20i1r0%20-%20Sen2Cor%202.11.00%20IODD.pdf">Level 2A Input Output Data Definition</a></li>
+</ul>
+
+<h2>AUTHOR</h2>
+
+Guido Riembauer, <a href="https://www.mundialis.de/">mundialis</a>
