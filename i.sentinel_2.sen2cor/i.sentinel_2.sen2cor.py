@@ -138,7 +138,7 @@ def main():
     sen2cor_dir = options["sen2cor_path"]
     input_file = options["input_file"]
     output_dir = options["output_dir"]
-    nprocs = int(options['nprocs'])
+    nprocs = int(options["nprocs"])
 
     if not os.path.isdir(sen2cor_dir):
         grass.fatal(_("Directory {} does not exist.").format(sen2cor_dir))
@@ -190,7 +190,8 @@ def main():
         "Nr_Threads": options["nprocs"],
         "DEM_Directory": "dem/{}".format(rel_dem_dir),
         "DEM_Reference": (
-            "https://srtm.csi.cgiar.org/wp-content" "/uploads/files/srtm_5x5/TIFF/"
+            "https://srtm.csi.cgiar.org/wp-content"
+            "/uploads/files/srtm_5x5/TIFF/"
         ),
         "Aerosol_Type": options["aerosol_type"].upper(),
         "Mid_Latitude": options["season"].upper(),
