@@ -23,12 +23,12 @@
 # %Module
 # % description: Runs atmospheric correction on a single Sentinel-2 L1C scene using sen2cor.
 # % keyword: imagery
+# % keyword: satellite
+# % keyword: Sentinel
 # % keyword: atmospheric correction
 # % keyword: radiometric conversion
 # % keyword: radiance
 # % keyword: reflectance
-# % keyword: satellite
-# % keyword: Sentinel
 # % keyword: atmosphere
 # %End
 
