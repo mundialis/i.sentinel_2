@@ -3,10 +3,15 @@
 # E402 module level import not at top of file
 # E501 line too long (83 > 79 characters)
 # F821 undefined name '_'
+# W503 line break before binary operator
 
 exclude = .git
 
 max-line-length = 80
 
+#ignore =
+#    E203  # whitespace before ':' (Black)
+
 per-file-ignores =
-    ./i.sentinel_2.parallel.index/i.sentinel_2.parallel.index.py: E501,F821
+    ./i.sentinel_2.parallel.index/i.sentinel_2.parallel.index.py: E501,F821,W503
+    ./i.sentinel_2.sen2cor/i.sentinel_2.sen2cor.py: E501,F821
