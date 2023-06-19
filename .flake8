@@ -10,3 +10,4 @@ max-line-length = 80
 
 per-file-ignores =
     ./i.sentinel_2.parallel.index/i.sentinel_2.parallel.index.py: E501,F821
+    ./i.sentinel_2.autotraining/i.sentinel_2.autotraining.py: E501,F821
