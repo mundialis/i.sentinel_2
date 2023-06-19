@@ -1,4 +1,4 @@
-name: Python Flake8 Code quality check
+name: Python Flake8 and pylint code quality check
 
 on: [push]
 
