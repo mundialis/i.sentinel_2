@@ -122,8 +122,7 @@ def main():
         grass.fatal(
             _(
                 "The 'r.mapcalc.tiled' module was not found, install it first:"
-                + "\n"
-                + "g.extension r.mapcalc.tiled"
+                "\ng.extension r.mapcalc.tiled"
             )
         )
 
@@ -139,7 +138,7 @@ def main():
     if index == "NDVI":
         if not red and nir:
             grass.fatal(
-                _("<red> and <nir> must be set for the index <%s>") % index
+                _(f"<red> and <nir> must be set for the index <{index}>")
             )
         grass.message(
             _(
@@ -147,9 +146,8 @@ def main():
             )
         )
         formula = (
-            output
-            + " = round(255 * (1.0 + (%s - %s)/float((%s + %s)))/2.0)"
-            % (str(nir), str(red), str(nir), str(red))
+            f"{output} = round(255 * (1.0 + ({nir} - {red})/"
+            f"float(({nir} + {red})))/2.0)"
         )
 
     elif index == "NDWI":
@@ -157,9 +155,8 @@ def main():
             _("Calculation of NDWI (Normalized difference water index)...")
         )
         formula = (
-            output
-            + " = round(255 * (1.0 + (%s - %s)/float((%s + %s)))/2.0)"
-            % (str(green), str(nir), str(green), str(nir))
+            f"{output} = round(255 * (1.0 + ({green} - {nir})/"
+            f"float(({green} + {nir})))/2.0)"
         )
 
     elif index == "NDBI":
@@ -167,27 +164,15 @@ def main():
             _("Calculation of NDBI (Normalized difference built-up index)...")
         )
         formula = (
-            output
-            + " = round(255 * (1.0 + (%s - %s)/float((%s + %s)))/2.0)"
-            % (str(swir), str(nir), str(swir), str(nir))
+            f"{output} = round(255 * (1.0 + ({swir} - {nir})/"
+            f"float(({swir} + {nir})))/2.0)"
         )
 
     elif index == "BSI":
         grass.message(_("Calculation of BSI (Bare soil index)..."))
         formula = (
-            "%s = round(255 * (1.0 + ((%s + %s)-(%s + %s))"
-            "/float(((%s + %s)+(%s + %s))))/2.0)"
-            % (
-                output,
-                str(swir),
-                str(red),
-                str(nir),
-                str(blue),
-                str(swir),
-                str(red),
-                str(nir),
-                str(blue),
-            )
+            f"{output} = round(255 * (1.0 + (({swir} + {red})-({nir} + {blue}))"
+            f"/float((({swir} + {red})+({nir} + {blue}))))/2.0)"
         )
 
     elif index == "asm":
@@ -214,7 +199,7 @@ def main():
         if nprocs > 1:
             grass.run_command(
                 "r.texture.tiled",
-                input="%s.1" % (pca_name),
+                input=f"{pca_name}.1",
                 method="asm",
                 processes=nprocs,
                 size=3,
@@ -224,7 +209,7 @@ def main():
         else:
             grass.run_command(
                 "r.texture",
-                input="%s.1" % (pca_name),
+                input=f"{pca_name}.1",
                 method="asm",
                 size=3,
                 output=output,
