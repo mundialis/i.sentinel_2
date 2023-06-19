@@ -6,7 +6,7 @@
 
 exclude = .git
 
-max-line-length = 88
+max-line-length = 80
 
 ignore =
     E203  # whitespace before ':' (Black)
