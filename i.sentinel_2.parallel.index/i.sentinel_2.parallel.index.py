@@ -130,8 +130,8 @@ def main():
     if nprocs > mp.cpu_count():
         grass.fatal(
             _(
-                "Using %d parallel processes but only %d CPUs available."
-                % (nprocs, mp.cpu_count())
+                f"Using {nprocs} parallel processes but only "
+                f"{mp.cpu_count()} CPUs available."
             )
         )
 
@@ -180,7 +180,7 @@ def main():
         # First calculate pca1 of the four 10m bands (2,3,4,8) as input
         # for the texture calculation
         grass.message(_("Calculating PCA"))
-        pca_name = "pca_%s" % (str(os.getpid()))
+        pca_name = f"pca_{os.getpid()}"
         rm_rasters.extend(
             [
                 pca_name + ".1",

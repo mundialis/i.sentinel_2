@@ -147,7 +147,7 @@ def main():
     # test if sen2cor is installed properly
     l2a_process = os.path.join(sen2cor_dir, "bin", "L2A_Process")
     cmd = grass.Popen(
-        "{} --help".format(l2a_process),
+        f"{l2a_process} --help",
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -184,12 +184,12 @@ def main():
     rm_files.append(gipp_modified)
     tree = ET.parse(gipp_path)
     root = tree.getroot()
-    rel_dem_dir = "srtm_{}".format(os.getpid())
+    rel_dem_dir = f"srtm_{os.getpid()}"
     # DEM list: https://github.com/senbox-org/snap-engine/blob/c92e2506eb57d56f6c7d3e739822f73c8186524c/etc/snap.auxdata.properties#L28
     # - CGIAR-SRTM-1sec = ~90m resolution (0:00:03 deg):
     update_dict = {
         "Nr_Threads": options["nprocs"],
-        "DEM_Directory": "dem/{}".format(rel_dem_dir),
+        "DEM_Directory": f"dem/{rel_dem_dir}",
         "DEM_Reference": (
             "https://srtm.csi.cgiar.org/wp-content"
             "/uploads/files/srtm_5x5/TIFF/"
