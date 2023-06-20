@@ -1,8 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>GRASS GIS manual: i.sentinel_2 toolset</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>i.sentinel_2 toolset - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="grassdocs.css" type="text/css">
 </head>
 <body bgcolor="white">
@@ -13,25 +14,34 @@
 
 <h2>NAME</h2>
 
-<em><b>i.sentinel_2</b></em> is a GRASS GIS addon toolset that searches, downloads, imports
-and preprocesses multi-spectral satellite data from the <a href="https://www.esa.int/Applications/Observing_the_Earth/Copernicus">ESA Copernicus mission</a>.
-<h2>KEYWORDS</h2>
-<a href="https://grass.osgeo.org/grass-stable/manuals/raster.html">imagery</a>, <a href="https://grass.osgeo.org/grass-stable/manuals/topic_import.html">import</a>, <a href="keywords.html#satellite">satellite</a>, <a href="keywords.html#Sentinel">Sentinel</a>
+<em>i.sentinel_2</em> is a GRASS GIS addon toolset that searches,
+downloads, imports and preprocesses multi-spectral Sentinel satellite data from the
+<a href="https://www.esa.int/Applications/Observing_the_Earth/Copernicus">ESA Copernicus mission</a>.
 
-<!-- meta page description: Toolset for download and processing time series of Sentinel-2 products -->
+<h2>KEYWORDS</h2>
+<a href="https://grass.osgeo.org/grass-stable/manuals/imagery.html">imagery</a>, <a href="https://grass.osgeo.org/grass-stable/manuals/topic_import.html">import</a>, <a href="keywords.html#satellite">satellite</a>, <a href="keywords.html#Sentinel">Sentinel</a>
+
+<!-- meta page description: Toolset for download and processing of Sentinel products -->
+
 <h2>DESCRIPTION</h2>
 
-The <em>i.sentinel_2</em> toolset consists of currently xx modules:
-<dl>
-  <dt><a href="i.sentinel_2.parallel.index.html">i.sentinel_2.parallel.index</a></dt>
-  <dd>Calculates different indices in parallel</a>
-  <dt><a href="i.sentinel_2.xxx.html">i.sentinel_2.xxx</a></dt>
-  <dd>description of xxx</a>
-</dl>
+The <em>i.sentinel_2</em> toolset consists of currently two modules:
+
+<ul>
+  <li><a href="i.sentinel_2.parallel.index.html">i.sentinel_2.parallel.index</a>:
+      Calculates different indices in parallel</li>
+  <li><a href="i.sentinel_2.sen2cor.html">i.sentinel_2.sen2cor</a>: runs atmospheric correction
+      on a single Sentinel-2 L1C scene using sen2cor</li>
+</ul>
 
 <h2>REQUIREMENTS</h2>
 
+<ul>
+  <li><em>i.sentinel_2.sen2cor</em>: see <a href="i.sentinel_2.sen2cor.html">i.sentinel_2.sen2cor</a>
+       manual page</li>
+</ul>
 
 <h2>AUTHORS</h2>
 
-Guido Riembauer <a href="https://www.mundialis.de/">mundialis</a>, Germany
+Guido Riembauer <a href="https://www.mundialis.de/">mundialis GmbH &amp; Co. KG</a>, Germany
+
