@@ -109,8 +109,7 @@ SEN2COR_DIR = None
 
 
 def cleanup():
-    """Cleanup files in the end
-    """
+    """Cleanup files in the end"""
     for rmfile in rm_files:
         try:
             os.remove(rmfile)
@@ -138,8 +137,7 @@ def cleanup():
 
 
 def main():
-    """Run i.sentinel_2.sen2cor
-    """
+    """Run i.sentinel_2.sen2cor"""
     global rm_files, rm_folders, REL_DEM_DIR, SEN2COR_DIR
     SEN2COR_DIR = options["sen2cor_path"]
     input_file = options["input_file"]
