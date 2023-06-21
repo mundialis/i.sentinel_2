@@ -92,7 +92,9 @@ rm_rasters = []
 
 
 def cleanup():
-    nuldev = open(os.devnull, "w")
+    """Cleanup files in the end
+    """
+    nuldev = open(os.devnull, "w", encoding="utf8")
     kwargs = {"flags": "f", "quiet": True, "stderr": nuldev}
     for rmrast in rm_rasters:
         if grass.find_file(name=rmrast, element="raster")["file"]:
@@ -100,6 +102,8 @@ def cleanup():
 
 
 def main():
+    """Run i.sentinel_2.parallel.index
+    """
     global rm_rasters
     red = options["red"]
     green = options["green"]
@@ -141,9 +145,8 @@ def main():
                 _(f"<red> and <nir> must be set for the index <{index}>")
             )
         grass.message(
-            _(
-                "Calculation of NDVI (Normalized difference vegetation index)..."
-            )
+            _("Calculation of NDVI (Normalized difference vegetation "
+              "index)...")
         )
         formula = (
             f"{output} = round(255 * (1.0 + ({nir} - {red})/"

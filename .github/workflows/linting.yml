@@ -27,5 +27,7 @@ jobs:
         flake8 --config=.flake8 --count --statistics --show-source .
     - name: Lint with Pylint
       run: |
-        echo ${{ github.event.repository.name }}
-        pylint --disable=R,bad-continuation,fixme,import-error --additional-builtins=_ --reports=n --score=n -j0 $(git ls-files '*.py')
+        pylint .
+    - name: Lint with Pylint - More strict, allowed to fail
+      run: |
+        pylint --rc-file=.pylintrc_allowed_to_fail .
