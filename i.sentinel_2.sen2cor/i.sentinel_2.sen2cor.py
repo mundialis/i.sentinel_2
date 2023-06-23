@@ -5,7 +5,8 @@
 # MODULE:      i.sentinel_2.sen2cor
 # AUTHOR(S):   Guido Riembauer, <riembauer at mundialis.de>
 #
-# PURPOSE:     Runs atmospheric correction on a single Sentinel-2 L1C scene using sen2cor
+# PURPOSE:     Runs atmospheric correction on a single Sentinel-2 L1C scene
+#              using sen2cor
 # COPYRIGHT:   (C) 2021-2023 by Guido Riembauer, mundialis GmbH & Co. KG and the GRASS Development Team
 #
 #  This program is free software; you can redistribute it and/or modify
@@ -97,56 +98,59 @@ from pathlib import Path
 import shutil
 import subprocess
 import multiprocessing as mp
-from grass.script import core as grass
 import xml.etree.ElementTree as ET
+
+from grass.script import core as grass
 
 rm_files = []
 rm_folders = []
-rel_dem_dir = None
-sen2cor_dir = None
+REL_DEM_DIR = None
+SEN2COR_DIR = None
 
 
 def cleanup():
+    """Cleanup files in the end"""
     for rmfile in rm_files:
         try:
             os.remove(rmfile)
-        except Exception as e:
-            grass.warning(_("Unable to remove file %s: %s") % (rmfile, e))
+        except OSError as ex:
+            grass.warning(_(f"Unable to remove file {rmfile}: {ex}"))
     # remove DEM
     # find dem_folder, it can be in different folders depending on version.
     # for whatever reason it can also be in the home directory rather than
     # the installed sen2cor directory
     possible_dirs_all = [
-        sen2cor_dir,
+        SEN2COR_DIR,
         os.path.join(str(Path.home()), "sen2cor"),
         os.path.join("root", "sen2cor"),
     ]
     possible_dirs = list(set(possible_dirs_all))
     for possible_dir in possible_dirs:
-        for root, dir, files in os.walk(possible_dir):
-            if rel_dem_dir in root:
+        for root, _dirname, _files in os.walk(possible_dir):
+            if REL_DEM_DIR in root:
                 rm_folders.append(root)
     for rmfolder in rm_folders:
         try:
             shutil.rmtree(rmfolder)
-        except Exception as e:
-            grass.warning(_("Unable to remove folder %s: %s") % (rmfolder, e))
+        except OSError as ex:
+            grass.warning(_(f"Unable to remove folder {rmfolder}: {ex}"))
 
 
 def main():
-    global rm_files, rm_folders, rel_dem_dir, sen2cor_dir
-    sen2cor_dir = options["sen2cor_path"]
+    """Run i.sentinel_2.sen2cor"""
+    global rm_files, rm_folders, REL_DEM_DIR, SEN2COR_DIR
+    SEN2COR_DIR = options["sen2cor_path"]
     input_file = options["input_file"]
     output_dir = options["output_dir"]
     nprocs = int(options["nprocs"])
 
-    if not os.path.isdir(sen2cor_dir):
-        grass.fatal(_("Directory {} does not exist.").format(sen2cor_dir))
+    if not os.path.isdir(SEN2COR_DIR):
+        grass.fatal(_(f"Directory {SEN2COR_DIR} does not exist."))
 
     # test if sen2cor is installed properly
-    l2a_process = os.path.join(sen2cor_dir, "bin", "L2A_Process")
+    l2a_process = os.path.join(SEN2COR_DIR, "bin", "L2A_Process")
     cmd = grass.Popen(
-        "{} --help".format(l2a_process),
+        f"{l2a_process} --help",
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -158,37 +162,37 @@ def main():
     # test nprocs settings
     if nprocs > mp.cpu_count():
         grass.fatal(
-            "Using %d parallel processes but only %d CPUs available."
-            % (nprocs, mp.cpu_count())
+            f"Using {nprocs} parallel processes but only "
+            f"{mp.cpu_count()} CPUs available."
         )
     elif nprocs == -2:
         nprocs = mp.cpu_count() - 1
 
     # test input data
     if not os.path.isdir(input_file):
-        grass.fatal(_("Input file {} not found").format(input_file))
+        grass.fatal(_(f"Input file {input_file} not found"))
     elif not input_file.endswith(".SAFE"):
         grass.fatal(_("Input file is not in .SAFE format"))
 
     # find L2A_GIPP.xml, it can be in different folders depending on version
-    for root, dir, files in os.walk(sen2cor_dir):
+    for root, _dirname, files in os.walk(SEN2COR_DIR):
         if "L2A_GIPP.xml" in files:
             gipp_path = os.path.join(root, "L2A_GIPP.xml")
 
     if not gipp_path:
-        grass.fatal(_("Could not find L2A_GIPP.xml in {}").format(sen2cor_dir))
+        grass.fatal(_(f"Could not find L2A_GIPP.xml in {SEN2COR_DIR}"))
 
     # modify L2A_GIPP.xml according to user input
     gipp_modified = grass.tempfile()
     rm_files.append(gipp_modified)
     tree = ET.parse(gipp_path)
     root = tree.getroot()
-    rel_dem_dir = "srtm_{}".format(os.getpid())
+    REL_DEM_DIR = f"srtm_{os.getpid()}"
     # DEM list: https://github.com/senbox-org/snap-engine/blob/c92e2506eb57d56f6c7d3e739822f73c8186524c/etc/snap.auxdata.properties#L28
     # - CGIAR-SRTM-1sec = ~90m resolution (0:00:03 deg):
     update_dict = {
         "Nr_Threads": options["nprocs"],
-        "DEM_Directory": "dem/{}".format(rel_dem_dir),
+        "DEM_Directory": f"dem/{REL_DEM_DIR}",
         "DEM_Reference": (
             "https://srtm.csi.cgiar.org/wp-content"
             "/uploads/files/srtm_5x5/TIFF/"
@@ -212,13 +216,14 @@ def main():
     tree.write(gipp_modified, encoding="utf-8", xml_declaration=True)
 
     # build sen2cor command
-    cmd_str = "{} --GIP_L2A {} --output_dir {} {}".format(
-        l2a_process, gipp_modified, output_dir, input_file
+    cmd_str = (
+        f"{l2a_process} --GIP_L2A {gipp_modified} "
+        f"--output_dir {output_dir} {input_file}"
     )
     sen2cor_cmd = grass.Popen(
         cmd_str, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
-    grass.message(_("Running sen2cor using command:\n{}\n...").format(cmd_str))
+    grass.message(_(f"Running sen2cor using command:\n{cmd_str}\n..."))
     sen2cor_resp = sen2cor_cmd.communicate()
     successful = False
     if "terminated successfully" in sen2cor_resp[0].decode("utf-8"):
@@ -233,9 +238,9 @@ def main():
                 if successful is True:
                     grass.message(
                         _(
-                            "Atmospherical Correction complete,"
-                            " generated output file <{}>"
-                        ).format(os.path.join(output_dir, file))
+                            "Atmospherical Correction complete, generated "
+                            f"output file <{os.path.join(output_dir, file)}>"
+                        )
                     )
 
                 else:
@@ -246,9 +251,9 @@ def main():
 
     if successful is False:
         error_msg = ""
-        for i in range(0, len(sen2cor_resp)):
-            error_msg += sen2cor_resp[i].decode("utf-8")
-        grass.fatal(_("Error using sen2cor: {}").format(error_msg))
+        for sen2cor_r in sen2cor_resp:
+            error_msg += sen2cor_r.decode("utf-8")
+        grass.fatal(_(f"Error using sen2cor: {error_msg}"))
 
     if flags["r"]:
         rm_folders.append(input_file)
