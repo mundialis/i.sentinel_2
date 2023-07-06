@@ -26,9 +26,10 @@
 # %Module
 # % description: Automatically generates training data from input bands and indices a reference classification and treecover map. Creates classes water, low vegetation, forest, bare soil and built-up.
 # % keyword: imagery
-# % keyword: sentinel
+# % keyword: satellite
+# % keyword: Sentinel
 # % keyword: classification
-# % keyword: extract
+# % keyword: extraction
 # %End
 
 # %option G_OPT_R_INPUT
