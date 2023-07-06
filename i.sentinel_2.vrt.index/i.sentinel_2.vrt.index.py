@@ -161,7 +161,7 @@ def main():
             grass.message(
                 _(f"Only one raster dataset found for band {band}. Copying...")
             )
-            rename_str = "%s,%s" % (current_bands_list[0], vrt_name)
+            rename_str = f"{current_bands_list[0]},{vrt_name}"
             grass.run_command("g.copy", raster=rename_str, overwrite=True)
         else:
             grass.fatal(
