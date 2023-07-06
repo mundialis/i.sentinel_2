@@ -1,0 +1,27 @@
+<h2>DESCRIPTION</h2>
+
+<em>i.sentinel_2.autotraining</em> is a GRASS addon that automatically creates
+raster and vector training/validation data for further classification. It
+covers the classes water, low vegetation, forest, bare soil and built-up.
+
+<h2>EXAMPLE</h2>
+
+<div class="code"><pre>
+i.sentinel_2.autotraining ndvi=ndvi ndwi=ndwi ndbi=ndbi bsi=bsi \
+  ref_classification=PROBAV_classification_Borneo \
+  ref_treecover_fraction=PROBA_V_100m_treecoverfraction \
+  percentage_threshold=0.1 npoints=1000 output_vector=test_autotraining_vector \
+  output_raster=test_autotraining_raster
+</pre></div>
+
+<h2>SEE ALSO</h2>
+
+<em>
+<a href="https://grass.osgeo.org/grass-stable/manuals/r.mapcalc.html">r.mapcalc</a>,
+<a href="https://grass.osgeo.org/grass-stable/manuals/r.patch.html">r.patch</a>,
+<a href="https://grass.osgeo.org/grass-stable/manuals/addons/r.sample.category.html">r.sample.category</a>
+</em>
+
+<h2>AUTHOR</h2>
+
+Guido Riembauer, <a href="https://www.mundialis.de/">mundialis GmbH &amp; Co. KG</a>
