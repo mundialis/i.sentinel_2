@@ -32,7 +32,9 @@ from grass.gunittest.gmodules import SimpleModule
 import grass.script as grass
 
 
-class TestISentinelAutotraining(TestCase):
+class TestISentinel2Autotraining(TestCase):
+    """Test class for i.sentinel_2.autotraining"""
+
     pid_str = str(os.getpid())
     # from actinia_test assets:
     probav_class = "probav_classification_2019"
@@ -46,51 +48,54 @@ class TestISentinelAutotraining(TestCase):
     red = "lsat7_2002_30"
     nir = "lsat7_2002_40"
     swir = "lsat7_2002_50"
-    old_region = "saved_region_{}".format(pid_str)
+    old_region = f"saved_region_{pid_str}"
     # calculated from the nc_spm dataset:
-    ndvi = "ndvi_{}".format(pid_str)
-    ndwi = "ndwi_{}".format(pid_str)
-    ndbi = "ndbi_{}".format(pid_str)
-    bsi = "bsi_{}".format(pid_str)
+    ndvi = f"ndvi_{pid_str}"
+    ndwi = f"ndwi_{pid_str}"
+    ndbi = f"ndbi_{pid_str}"
+    bsi = f"bsi_{pid_str}"
     # to be generated
     str_column = "class_string"
     int_column = "class_int"
-    tr_map_rast = "tr_map_rast_{}".format(pid_str)
-    tr_map_vect = "tr_map_vect_{}".format(pid_str)
+    tr_map_rast = f"tr_map_rast_{pid_str}"
+    tr_map_vect = f"tr_map_vect_{pid_str}"
 
     @classmethod
-    def setUpClass(self):
+    # pylint: disable=invalid-name
+    def setUpClass(cls):
         """Ensures expected computational region and generated data"""
-        grass.run_command("g.region", save=self.old_region)
-        grass.run_command("g.region", raster=self.blue)
+        grass.run_command("g.region", save=cls.old_region)
+        grass.run_command("g.region", raster=cls.blue)
         # calculate indices
         ndvi_exp = (
-            f"{self.ndvi} = float({self.nir}-{self.red}/"
-            f"float({self.nir}+{self.red}))"
+            f"{cls.ndvi} = float({cls.nir}-{cls.red}/"
+            f"float({cls.nir}+{cls.red}))"
         )
         ndwi_exp = (
-            f"{self.ndwi} = float({self.green}-{self.nir})/"
-            f"float({self.green}+{self.nir})"
+            f"{cls.ndwi} = float({cls.green}-{cls.nir})/"
+            f"float({cls.green}+{cls.nir})"
         )
         ndbi_exp = (
-            f"{self.ndbi} = float({self.swir}-{self.nir})/"
-            f"float({self.swir}+{self.nir})"
+            f"{cls.ndbi} = float({cls.swir}-{cls.nir})/"
+            f"float({cls.swir}+{cls.nir})"
         )
         bsi_exp = (
-            f"{self.bsi} = float(({self.swir}+{self.red})-"
-            f"({self.nir}+{self.blue}))/float(({self.swir}+"
-            f"{self.blue})+({self.nir}+{self.blue}))"
+            f"{cls.bsi} = float(({cls.swir}+{cls.red})-"
+            f"({cls.nir}+{cls.blue}))/float(({cls.swir}+"
+            f"{cls.blue})+({cls.nir}+{cls.blue}))"
         )
         for exp in [ndvi_exp, ndwi_exp, ndbi_exp, bsi_exp]:
             grass.run_command("r.mapcalc", expression=exp)
 
     @classmethod
-    def tearDownClass(self):
+    # pylint: disable=invalid-name
+    def tearDownClass(cls):
         """Remove the temporary region and generated data"""
-        grass.run_command("g.region", region=self.old_region)
-        for rast in [self.ndvi, self.ndwi, self.ndbi, self.bsi]:
+        grass.run_command("g.region", region=cls.old_region)
+        for rast in [cls.ndvi, cls.ndwi, cls.ndbi, cls.bsi]:
             grass.run_command("g.remove", type="raster", name=rast, flags="f")
 
+    # pylint: disable=invalid-name
     def tearDown(self):
         """Remove the outputs created
         This is executed after each test run.
@@ -140,7 +145,7 @@ class TestISentinelAutotraining(TestCase):
             self.assertIn(
                 col,
                 vinfo_cols,
-                ("Column {} is not in the output" "vector map").format(col),
+                f"Column {col} is not in the output" "vector map",
             )
 
     def test_autotraining_raster(self):
