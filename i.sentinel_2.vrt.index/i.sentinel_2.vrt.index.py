@@ -72,17 +72,19 @@
 # % description: Prefix in front of output maps
 # %end
 
-import grass.script as grass
+import atexit
+import multiprocessing as mp
 import os
 import sys
-import multiprocessing as mp
-import atexit
+
+import grass.script as grass
 from grass.pygrass.modules import Module, ParallelModuleQueue
 
 rm_regions = []
 
 
 def cleanup():
+    """Cleanup function (can be extended)"""
     nuldev = open(os.devnull, "w")
     kwargs = {"flags": "f", "quiet": True, "stderr": nuldev}
     for rmr in rm_regions:
@@ -96,6 +98,7 @@ def cleanup():
 
 
 def main():
+    """Main function of i.sentinel_2.vrt.index"""
     global rm_regions
     indices = options["indices"].split(",")
     nprocs = int(options["nprocs"])
@@ -106,8 +109,8 @@ def main():
     if not grass.find_program("i.sentinel.parallel.index", "--help"):
         grass.fatal(
             _(
-                "The 'i.sentinel_2.parallel.index' module was not found, install it first:"
-                + "\n"
+                "The 'i.sentinel_2.parallel.index' module was not found, "
+                + "install it first: \n"
                 + "g.extension i.sentinel_2.parallel.index url=path/to/addon"
             )
         )
@@ -125,9 +128,9 @@ def main():
     if nprocs > mp.cpu_count():
         grass.warning(
             _(
-                "Using %d parallel processes but only %d CPUs available. Using %d procs."
+                f"Using {nprocs} parallel processes but only {mp.cpu_count()} "
+                f"CPUs available. Using {mp.cpu_count() - 1} procs."
             )
-            % (nprocs, mp.cpu_count(), mp.cpu_count() - 1)
         )
         nprocs = mp.cpu_count() - 1
 
@@ -156,8 +159,7 @@ def main():
             )
         elif len(current_bands_list) == 1:
             grass.message(
-                _("Only one raster dataset found for band %s. Copying...")
-                % (band)
+                _(f"Only one raster dataset found for band {band}. Copying...")
             )
             rename_str = "%s,%s" % (current_bands_list[0], vrt_name)
             grass.run_command("g.copy", raster=rename_str, overwrite=True)
