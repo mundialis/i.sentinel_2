@@ -3,8 +3,8 @@
 #
 # MODULE:       i.sentinel_2.vrt.index
 # AUTHOR(S):    Guido Riembauer
-# PURPOSE:      Creates vrts from input rasters with identical Band suffix and
-#               calculates indices parallelly.
+# PURPOSE:      Creates VRTs from input rasters with identical band suffix and
+#               calculates indices in parallel.
 # COPYRIGHT:    (C) 2020-2023 by mundialis GmbH & Co. KG and the
 #               GRASS Development Team
 #
@@ -22,7 +22,7 @@
 ############################################################################
 
 # %module
-# % description: Creates .vrt from input rasters and calculates different indices and texture measures in parallel.
+# % description: Creates GRASS GIS VRT maps from input raster maps and calculates different indices and texture measures in parallel.
 # % keyword: imagery
 # % keyword: satellite
 # % keyword: Sentinel
