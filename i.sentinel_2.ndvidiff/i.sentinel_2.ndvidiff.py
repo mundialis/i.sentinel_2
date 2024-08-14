@@ -198,7 +198,9 @@ def main():
             try:
                 os.makedirs(options["output_dir"])
             except Exception as e:
-                grass.fatal(_(f"Cannot create directory {options['output_dir']}: {e}"))
+                grass.fatal(
+                    _(f"Cannot create directory {options['output_dir']}: {e}")
+                )
 
     # set region to AOI
     cur_region = f"cur_region_{os.getpid()}"
@@ -222,7 +224,11 @@ def main():
             grass.fatal(_(f"Directory {in_dir} does not exist"))
         scenes = os.listdir(in_dir)
         s2_scenes = [
-            True if scene.startswith("S2") and scene.endswith(".SAFE") else False
+            (
+                True
+                if scene.startswith("S2") and scene.endswith(".SAFE")
+                else False
+            )
             for scene in scenes
         ]
         if False in s2_scenes:
@@ -289,7 +295,9 @@ def main():
             )
 
         # prepare and run t.rast.mosaic
-        grass.message(_(f"Temporally aggregating spectral bands for time step {x}..."))
+        grass.message(
+            _(f"Temporally aggregating spectral bands for time step {x}...")
+        )
         all_strds = list(grass.parse_command("t.list").keys())
         band_strds = [
             item.split("@")[0]
@@ -335,9 +343,15 @@ def main():
                 t_rast_mosaic_kwargs["shadows"] = shadow_strds
 
                 if options["cloud_shadow_buffer"]:
-                    t_rast_mosaic_kwargs["cloudbuffer"] = options["cloud_shadow_buffer"]
-                t_rast_mosaic_kwargs["shadowbuffer"] = options["cloud_shadow_buffer"]
-            grass.run_command("t.rast.mosaic", overwrite=True, **t_rast_mosaic_kwargs)
+                    t_rast_mosaic_kwargs["cloudbuffer"] = options[
+                        "cloud_shadow_buffer"
+                    ]
+                t_rast_mosaic_kwargs["shadowbuffer"] = options[
+                    "cloud_shadow_buffer"
+                ]
+            grass.run_command(
+                "t.rast.mosaic", overwrite=True, **t_rast_mosaic_kwargs
+            )
 
         # create timestep group
         if options["rgbi_basename"]:
@@ -346,9 +360,17 @@ def main():
             timestep_group = f"rgbi_s2_timestep{x}"
             rm_groups.append(timestep_group)
         if options["output_dir"] or options["rgbi_basename"]:
-            timestep_group_rasters = [red_band, green_band, blue_band, nir_band]
+            timestep_group_rasters = [
+                red_band,
+                green_band,
+                blue_band,
+                nir_band,
+            ]
             grass.run_command(
-                "i.group", group=timestep_group, input=timestep_group_rasters, quiet=True
+                "i.group",
+                group=timestep_group,
+                input=timestep_group_rasters,
+                quiet=True,
             )
             output_groups.append(timestep_group)
 
@@ -408,7 +430,10 @@ def main():
 
     grass.message(_("Vectorizing results..."))
     grass.run_command(
-        "r.to.vect", input=ndvi_loss_map, output=ndvi_loss_map_vect_tmp, type="area"
+        "r.to.vect",
+        input=ndvi_loss_map,
+        output=ndvi_loss_map_vect_tmp,
+        type="area",
     )
 
     if options["min_size"]:
