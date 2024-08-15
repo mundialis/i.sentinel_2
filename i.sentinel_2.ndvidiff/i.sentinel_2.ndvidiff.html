@@ -37,6 +37,9 @@ The <em>nprocs</em> option can be used to run the different submodules in parall
 With the <em>min_size</em> option, small areas of detected NDVI loss may be removed
 <p>
 The <em>rgbi_basename</em> option can be used to define a basename in case the aggregated RGBI maps should be persistent in GRASS
+<p>
+A minimum NDVI value can be passed by the <em>relevant_min_ndvi</em> option. In this case, identification of significant NDVI loss areas is<br>
+delimited to pixels where the first aggregated NDVI map has a value of at least <em>relevant_min_ndvi</em>.
 
 <h2>EXAMPLE</h2>
 

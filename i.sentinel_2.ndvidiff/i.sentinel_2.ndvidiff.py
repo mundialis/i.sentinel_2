@@ -101,6 +101,14 @@
 # %end
 
 # %option
+# % key: relevant_min_ndvi
+# % type: double
+# % required: no
+# % multiple: no
+# % description: delimit identification of NDVI loss areas to pixels with an NDVI value of at least <relevant_min_ndvi> in the first time interval
+# %end
+
+# %option
 # % key: nprocs
 # % type: integer
 # % required: no
@@ -166,9 +174,9 @@ cur_region = ""
 
 # cleanup function (can be extended)
 def cleanup():
+    """Cleanup function (can be extended)"""
     from grass_gis_helpers import cleanup
 
-    """Cleanup function (can be extended)"""
     grass.run_command("g.region", region=cur_region)
     cleanup.general_cleanup(
         rm_vectors=rm_vec,
@@ -181,6 +189,7 @@ def cleanup():
 
 
 def main():
+    """do the work"""
     from grass_gis_helpers import general
 
     global rm_vec, rm_rast, rm_reg, rm_strds_w_rasters, rm_groups, cur_region
@@ -325,8 +334,10 @@ def main():
                 "output": out_rast,
                 "method": options[
                     "aggregation_method"
-                ],  # even if clouds are left, this should remove them (but may add shadows)
-                "granularity": "all",  # this produces a single raster instead of a strds
+                ],  # even if clouds are left, this should remove them
+                # (but may add shadows)
+                "granularity": "all",  # this produces a single raster
+                # instead of a strds
                 "nprocs": nprocs,
             }
             if "B02" in item:
@@ -389,7 +400,10 @@ def main():
                 ndvi_map = f"{strds_name}_ndvi"
                 rm_rast.append(ndvi_map)
         ndvi_rasters.append(ndvi_map)
-        ndvi_exp = f"{ndvi_map}=float({nir_band}-{red_band})/({nir_band} + {red_band})"
+        ndvi_exp = (
+            f"{ndvi_map}=float({nir_band}-{red_band})/"
+            f"({nir_band} + {red_band})"
+        )
         grass.run_command("r.mapcalc", expression=ndvi_exp, quiet=True)
 
     grass.message(_("Calculating NDVI difference and loss maps..."))
@@ -417,7 +431,16 @@ def main():
         rm_rast.append(ndvi_loss_map)
 
     grass.run_command("r.mask", vector=options["aoi"])
-    loss_exp = f"{ndvi_loss_map} = if({ndvi_diff_map}<={ndvi_diff_threshold},1,null())"
+    if options["relevant_min_ndvi"]:
+        loss_exp = (
+            f"{ndvi_loss_map} = if(({ndvi_diff_map}<={ndvi_diff_threshold}"
+            f" && {ndvi_rasters[0]}>={options['relevant_min_ndvi']}),1,null())"
+        )
+    else:
+        loss_exp = (
+            f"{ndvi_loss_map} = if({ndvi_diff_map}<="
+            f"{ndvi_diff_threshold},1,null())"
+        )
     grass.run_command("r.mapcalc", expression=loss_exp, quiet=True)
     if options["ndvi_loss_map_vect"]:
         ndvi_loss_map_vect = options["ndvi_loss_map_vect"]
