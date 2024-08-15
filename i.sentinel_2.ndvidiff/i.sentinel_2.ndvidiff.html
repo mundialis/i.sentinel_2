@@ -1,10 +1,10 @@
 <h2>DESCRIPTION</h2>
 
-<em>i.sentinel_2.ndvidiff</em> is a GRASS addon that calculates an NDVI difference map from Sentinel-2 data.
+<em>i.sentinel_2.ndvidiff</em> is a GRASS addon that calculates an NDVI difference map from Sentinel-2 L2A data.
 
 <p>
 The goal of the addon is to compare the NDVI status from two time intervals for an AOI given by the vector map <em>aoi</em>. For each interval, <br>
-Sentinel-2 data is imported from the local file system (using <a href="https://github.com/mundialis/t.sentinel">t.sentinel.import</a>), cloud-masked (using <a href="https://github.com/mundialis/t.sentinel">t.sentinel.mask</a>),<br>
+Sentinel-2 L2A data is imported from the local file system (using <a href="https://github.com/mundialis/t.sentinel">t.sentinel.import</a>) given with` input_dir_first` and `input_dir_second`, cloud-masked (using <a href="https://github.com/mundialis/t.sentinel">t.sentinel.mask</a>),<br>
     and temporally aggregated to receive one spectral band (using <a href="https://github.com/mundialis/t.rast.mosaic">t.rast.mosaic</a>) per time interval.
 <p>
 One NDVI map for each time interval as well as a difference map between the two are calculated. The user may define <br>

@@ -6,7 +6,7 @@
 # AUTHOR(S):   Guido Riembauer
 
 # PURPOSE:     Calculates NDVI difference maps from Sentinel-2 data
-# COPYRIGHT:   (C) 2024 by mundialis GmbH & Co. KG and the GRASS Development
+# COPYRIGHT:   (C) 2024 by mundialis GmbH & Co. KG
 #              Team
 #
 # This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,6 @@
 # % keyword: imagery
 # % keyword: sentinel
 # % keyword: ndvi
-# % keyword: VHR
 # %end
 
 # %option G_OPT_M_DIR
@@ -161,7 +160,6 @@ import atexit
 import os
 import grass.script as grass
 
-# from grass_gis_helpers import general,cleanup
 
 # initialize global variables
 rm_vec = []
@@ -269,7 +267,7 @@ def main():
 
         if clouds:
             cloud_strds = f"{strds_name}_clouds_rast"
-            shadow_strds = f"{strds_name}_shadows"
+            shadow_strds = f"{strds_name}_shadows_rast"
             rm_strds_w_rasters.append(cloud_strds)
             rm_strds_w_rasters.append(shadow_strds)
             grass.message(
