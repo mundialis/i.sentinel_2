@@ -1,0 +1,71 @@
+<h2>DESCRIPTION</h2>
+
+<em>i.sentinel_2.ndvidiff</em> is a GRASS addon that calculates an NDVI difference map from Sentinel-2 L2A data.
+
+<p>
+The goal of the addon is to compare the NDVI status from two time intervals for an AOI given by the vector map <em>aoi</em>. For each interval, <br>
+Sentinel-2 L2A data is imported from the local file system (using <a href="https://github.com/mundialis/t.sentinel">t.sentinel.import</a>) given with` input_dir_first` and `input_dir_second`, cloud-masked (using <a href="https://github.com/mundialis/t.sentinel">t.sentinel.mask</a>),<br>
+    and temporally aggregated to receive one spectral band (using <a href="https://github.com/mundialis/t.rast.mosaic">t.rast.mosaic</a>) per time interval.
+<p>
+One NDVI map for each time interval as well as a difference map between the two are calculated. The user may define <br>
+a threshold via the <em>ndvi_diff_threshold</em> option, which is used to extract areas of signficant NDVI loss as raster and/or vector maps. <br>
+<p>
+The outputs of the module (RGBI mosaics, NDVI maps, NDVI difference map, NDVI loss areas) can be saved as GRASS raster/vector maps or <br>
+exported using the <em>output_dir</em> option.
+
+
+<h2>NOTES</h2>
+The <em>offset</em> option can be used to take the systematic reflectance offset into account that is added to Sentinel-2 <br>
+reflectance data since Processing Baseline 4.0.0.
+<p>
+If no <em>ndvi_diff_threshold</em>  is given, a threshold is automatically calculated from the NDVI difference map using <br>
+<em>thresh = Q1 - 1.5 * (Q3 - Q1)</em>, where Q1 and Q3 are the first and third quantile of the NDVi difference map.
+<p>
+For cloud masking, the Sen2Cor cloud mask delivered with L2A data is combined with the output of <a href="https://github.com/mundialis/t.sentinel">t.sentinel.mask</a>.
+<p>
+The temporal aggregation method to be passed on to <a href="https://github.com/mundialis/t.rast.mosaic">t.rast.mosaic</a> can be defined via the <em>aggregation_method</em> option.<br>
+Best results were achieved with <em>minimum</em> aggregation which reduces negative effects due to remaining clouds.
+<p>
+The <em>cloud_shadow_buffer</em> option can be used to define a buffer radius (in raster cells) that is applied to detected <br>
+clouds and cloud shadows to compensate for inaccuracies in the cloud/shadow detection.
+<p>
+Cloud/Shadow masking is optional and is activated via the <em>-c</em> flag. If visual inspection shows that all input S-2 scenes <br>
+are cloudfree, it may be omitted.
+<p>
+The <em>nprocs</em> option can be used to run the different submodules in parallel.
+<p>
+With the <em>min_size</em> option, small areas of detected NDVI loss may be removed
+<p>
+The <em>rgbi_basename</em> option can be used to define a basename in case the aggregated RGBI maps should be persistent in GRASS
+<p>
+A minimum NDVI value can be passed by the <em>relevant_min_ndvi</em> option. In this case, identification of significant NDVI loss areas is<br>
+delimited to pixels where the first aggregated NDVI map has a value of at least <em>relevant_min_ndvi</em>.
+
+<h2>EXAMPLE</h2>
+
+<h3>Create an NDVI difference map in GRASS only, save intermediate results, skip cloud/shadow detection, use an automatic threshold for the detection of significant NDVi loss</h3>
+
+<div class="code"><pre>
+i.sentinel_2.ndvidiff input_dir_first=~/S2_2020 input_dir_second=~/S2_2024 aoi=aoi_vector ndvi_loss_map_rast=ndvi_loss_result ndvi_diff_map=ndvi_diff_map_2024_2020 ndvi_map_first=ndvi_s2_2020 ndvi_map_second=ndvi_s2_2024 nprocs=4 offset=-1000 aggregation_method=minimum
+</pre></div>
+
+<h3>Export the NDVI difference map and intermediate results to a local directory, use a defined threshold, apply cloud masking and use a cloud/shadow buffer, apply a minimum size</h3>
+<div class="code"><pre>
+i.sentinel_2.ndvidiff -c input_dir_first=~/S2_2020 input_dir_second=~/S2_2024 aoi=aoi_vector offset=-1000 nprocs=4 cloud_shadow_buffer=10 aggregation_method=minimum output_dir=~/result_dir ndvi_diff_threshold=-0.25 min_size=200
+</pre></div>
+
+
+<h2>REQUIREMENTS</h2>
+- <a href="t.sentinel.html">t.sentinel</a>,
+- <a href="t.rast.mosaic.html">t.rast.mosaic</a>
+- <a href="https://github.com/mundialis/grass-gis-helpers">grass-gis-helpers Python module</a>
+
+
+<h2>SEE ALSO</h2>
+<em>
+<a href="t.sentinel.html">t.sentinel</a>,
+<a href="t.rast.mosaic.html">t.rast.mosaic</a>
+</em>
+
+<h2>AUTHORS</h2>
+Guido Riembauer, <a href="https://www.mundialis.de/">mundialis</a>
